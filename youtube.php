@@ -277,9 +277,8 @@
 
       $(".btn-left").on("click", function (e) {
         e.preventDefault();
-        socket.emit('servidor-funcion',`$("ytd-player").find("#movie_player").removeClass("ytp-autohide"); setTimeout(() => {
-          $(".ytp-fullscreen-button").trigger("click");
-        }, 600); $("ytd-player").find("#movie_player").addClass("ytp-autohide");`);
+        socket.emit('servidor-funcion',`$("ytd-player").find("#movie_player").removeClass("ytp-autohide"); 
+          $(".ytp-fullscreen-button").trigger("click"); $("ytd-player").find("#movie_player").addClass("ytp-autohide");`);
       });
 
       $(".btn-play").on("click", function (e) {
