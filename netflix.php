@@ -324,7 +324,6 @@
       border-radius: 50%;
       margin: 45px auto;
       position: relative;
-      display: none;
   }
   .app-netflix-control .btn {
       color: #858585;
@@ -358,6 +357,7 @@
   .app-netflix-control-contenedor {
       width: 100%;
       height: 100%;
+      display: none;
   }
   .app-netflix-subtitulos {
       position: fixed;
@@ -467,7 +467,8 @@
       socket.emit('com-bg-app', 'obtener-netflix-home');
       appCargador();
       socket.on('netflix-home-client', function(data){   
-        $('.app-netflix-login, .app-netflix-home').removeClass("activo");
+        console.log("aswdasdasd");
+        $('.app-netflix-login, .app-netflix-home, .app-netflix-control-contenedor').removeClass("activo");
         if(data[0].tipo == 1){
           llenarLogin(data[0]);
           $('.app-netflix-login').addClass("activo");
@@ -486,16 +487,25 @@
 
       $(document).on("click", ".app-netflix-item, .btn-netlfix-reproducir", function (e) {
         e.preventDefault();
+        appCargador();
         socket.emit('servidor-funcion',`location.href = "${"https://www.netflix.com"+$(this).attr("href")}"; console.log("asd")`);
       });
       
 
       $(window).on('scroll', function (e){
+        if($(".app-netflix-control-contenedor").hasClass("activo"))
+          return false;
         socket.emit('servidor-funcion',`window.scrollTo({ top: ${$(this).scrollTop()+($(this).scrollTop())}, behavior: 'smooth' });`);
         if(($(this).scrollTop() % 50) == 0){
           socket.emit('com-bg-app', 'obtener-netflix-home');
-          console.log("entra");
         }
+      });
+
+      socket.on('activar-control', function(data){      
+        console.log("control");  
+        $('.app-netflix-login, .app-netflix-home').removeClass("activo");
+        $('.app-netflix-control-contenedor').addClass("activo");
+        appCargador(false);   
       });
       
       
