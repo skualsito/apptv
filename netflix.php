@@ -310,6 +310,85 @@
   .activo {
     display: block!important;
   }
+  .app-netflix-itemslide-scroll[contexto="netflixOriginals"] .app-netflix-itemslide-contenedor, .app-netflix-itemslide-scroll[contexto="netflixOriginals"] .app-netflix-item {
+      height: 200px;
+  }
+
+  .app-netflix-itemslide-scroll[contexto="netflixOriginals"] {
+      height: 200px;
+  }
+  .app-netflix-control {
+      width: 250px;
+      height: 250px;
+      border: 50px solid #3c3c3c;
+      border-radius: 50%;
+      margin: 45px auto;
+      position: relative;
+      display: none;
+  }
+  .app-netflix-control .btn {
+      color: #858585;
+      font-size: 25px;
+      position: absolute;
+      width: 65px;
+      height: 65px;
+      padding: 0;
+  }
+  .btn-up {
+      top: calc(-25px - 32.5px);
+      right: calc(50% - 32.5px);
+  }
+  .btn-down {
+      bottom: calc(-25px - 32.5px);
+      right: calc(50% - 32.5px);
+  }
+  .btn-left {
+      left: calc(-25px - 32.5px);
+      top: calc(50% - 32.5px);
+  }
+  .btn-right {
+      right: calc(-25px - 32.5px);
+      top: calc(50% - 32.5px);
+  }
+  .btn-play {
+      top: calc(50% - 32.5px);
+      right: calc(50% - 32.5px);
+      font-size: 21px!important;
+  }
+  .app-netflix-control-contenedor {
+      width: 100%;
+      height: 100%;
+  }
+  .app-netflix-subtitulos {
+      position: fixed;
+      top: 0;
+      left: 100%;
+      width: 100%;
+      height: 100%;
+      background-color: #3c3c3c;
+      color: #fff;
+      padding: 20px;
+  }
+
+  .app-netflix-subtitulos h5 {
+      font-size: 24px;
+      font-weight: 500;
+      margin-top: 10px;
+  }
+
+  .app-netflix-subtitulos button {
+      background: transparent;
+      border: none;
+      padding: 0;
+      width: 100%;
+      text-align: left;
+      color: #bbb;
+      font-weight: 400;
+  }
+
+  .app-netflix-subtitulos h5:first-child {
+      margin-top: 0;
+  }
 
   </style>
   <body class="app-netflix">
@@ -345,8 +424,26 @@
               
 
             </div>
+
+            
             
           </div>
+          <div class="app-netflix-control-contenedor">
+            <div class="app-netflix-control">
+              <button class="btn btn-up"><i class="fas fa-comment-dots"></i></button>
+              <button class="btn btn-down"><i class="fas fa-expand"></i></button>
+              <button class="btn btn-left"><i class="fas fa-backward"></i></button>
+              <button class="btn btn-right"><i class="fas fa-forward"></i></button>
+              <button class="btn btn-play"><i class="fas fa-play"></i>  /  <i class="fas fa-pause"></i></button>
+            </div>
+            <div class="app-netflix-subtitulos">
+              <h5>Audio</h5>
+              <button>Español</button>
+              <h5>Subtitulos</h5>
+              <button>Español</button>
+            </div>
+          </div>
+          
 
 
         </div>
@@ -394,9 +491,10 @@
       
 
       $(window).on('scroll', function (e){
-        socket.emit('servidor-funcion',`window.scrollTo({ top: ${$(this).scrollTop()}, behavior: 'smooth' });`);
+        socket.emit('servidor-funcion',`window.scrollTo({ top: ${$(this).scrollTop()+($(this).scrollTop())}, behavior: 'smooth' });`);
         if(($(this).scrollTop() % 50) == 0){
           socket.emit('com-bg-app', 'obtener-netflix-home');
+          console.log("entra");
         }
       });
       
@@ -426,19 +524,19 @@
         $(".app-netflix-big p").html(data.grande.sinop);
         $(".btn-netlfix-reproducir").attr("href", data.grande.href);
         $(".app-netflix-contenedor-general").html("");
-        data.todo.map((data)=>{
+        data.todo.map((datita)=>{
           $(".app-netflix-contenedor-general").append(`
             <div class="app-netflix-itemslide">
-              <p>${data.titulo}</p>
-              <div class="app-netflix-itemslide-scroll" contexto="${data.contexto}">
+              <p>${datita.titulo}</p>
+              <div class="app-netflix-itemslide-scroll" contexto="${datita.contexto}">
                 <div class="app-netflix-itemslide-contenedor">
                   
                 </div>
               </div>
             </div>
           `);
-          data.pelis.map((data)=>{
-              $(".app-netflix-itemslide-contenedor").append(`
+          datita.pelis.map((data)=>{
+              $(".app-netflix-itemslide-scroll[contexto='"+datita.contexto+"'] .app-netflix-itemslide-contenedor").append(`
               <div class="app-netflix-item" href="${(data.link) ? data.link : ''}">
                 <img src="${(data.img) ? data.img : ''}" alt="${data.titulo}">
               </div>
