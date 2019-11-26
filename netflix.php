@@ -389,6 +389,34 @@
   .app-netflix-subtitulos h5:first-child {
       margin-top: 0;
   }
+  .app-netflix-buscador-contenedor {
+      float: right;
+      color: #fff;
+      font-size: 24px;
+      margin-right: 20px;
+  }
+
+  .app-netflix-navbar {
+      position: absolute;
+      top: 10px;
+      left: 0;
+      z-index: 10;
+      width: 100%;
+  }
+
+  .app-netflix-perfil {
+      float: right;
+  }
+
+  .app-netflix-buscador {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #000;
+      display: none;
+  }
 
   </style>
   <body class="app-netflix">
@@ -407,7 +435,18 @@
           </div>
 
           <div class="app-netflix-home">
-
+          
+            <div class="app-netflix-navbar">
+              <div class="app-netflix-perfil"></div>
+              <div class="app-netflix-buscador-contenedor">
+                <div class="app-netflix-btn-buscador"><i class="fas fa-search"></i></div>
+                <div class="app-netflix-buscador">
+                  <h3>Buscar</h3>
+                  <input type="text" id="search-netflix">
+                  <div class="app-netflix-buscador-resultados"></div>
+                </div>
+              </div>
+            </div>
             <div class="app-netflix-big">
               <div class="app-netflix-big-bg">
                 <img src="assets/img/netflix.png" alt="bigPicture">
@@ -467,7 +506,6 @@
       socket.emit('com-bg-app', 'obtener-netflix-home');
       appCargador();
       socket.on('netflix-home-client', function(data){   
-        console.log("aswdasdasd");
         $('.app-netflix-login, .app-netflix-home, .app-netflix-control-contenedor').removeClass("activo");
         if(data[0].tipo == 1){
           llenarLogin(data[0]);
@@ -488,8 +526,20 @@
       $(document).on("click", ".app-netflix-item, .btn-netlfix-reproducir", function (e) {
         e.preventDefault();
         appCargador();
-        socket.emit('servidor-funcion',`location.href = "${"https://www.netflix.com"+$(this).attr("href")}"; console.log("asd")`);
+        socket.emit('servidor-funcion',`location.href = "${"https://www.netflix.com"+$(this).attr("href")}";`);
       });
+
+      $(document).on("click", ".app-netflix-perfil", function (e) {
+        e.preventDefault();
+        appCargador();
+        socket.emit('servidor-funcion',`location.href = "https://www.netflix.com/profiles";`);
+      });
+
+      $(document).on("click", ".app-netflix-btn-buscador", function (e) {
+        e.preventDefault();
+        socket.emit('servidor-funcion',`$(".searchTab").trigger("click"); $(".searchInput input").focus()`);
+      });
+      
       
 
       $(window).on('scroll', function (e){
@@ -502,7 +552,6 @@
       });
 
       socket.on('activar-control', function(data){      
-        console.log("control");  
         $('.app-netflix-login, .app-netflix-home').removeClass("activo");
         $('.app-netflix-control-contenedor').addClass("activo");
         appCargador(false);   
@@ -534,6 +583,7 @@
         $(".app-netflix-big p").html(data.grande.sinop);
         $(".btn-netlfix-reproducir").attr("href", data.grande.href);
         $(".app-netflix-contenedor-general").html("");
+        $(".app-netflix-perfil").html(`<img src="${data.avatar}" alt="Perfil">`) 
         data.todo.map((datita)=>{
           $(".app-netflix-contenedor-general").append(`
             <div class="app-netflix-itemslide">
