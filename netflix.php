@@ -190,7 +190,7 @@
       display: none;
   }
 
-  .app-netflix-contenedor h3 {
+  .app-netflix-login h3 {
       text-align: center;
       font-size: 14px;
       color: #fff;
@@ -411,11 +411,52 @@
   .app-netflix-buscador {
       position: fixed;
       top: 0;
-      left: 0;
+      left: 100%;
       width: 100%;
       height: 100%;
       background: #000;
-      display: none;
+      padding: 20px;
+      -webkit-transition: all .5s ease-in-out;
+      -moz-transition: all .5s ease-in-out;
+      -o-transition: all .5s ease-in-out;
+      transition: all .5s ease-in-out;
+  }
+  .app-netflix-buscador.activo {
+      left: 0%;
+  }
+  .app-netflix-buscador h3 {
+      color: #4a4a4a;
+      width: 100%;
+  }
+
+  .app-netflix-buscador input {
+      background: #1f1f1f;
+      border: 1px solid #424242;
+      color: #fff;
+      padding: 5px 10px;
+      font-weight: 100;
+      width: 100%;
+  }
+  .app-netflix-buscador-resultados {
+      overflow: auto;
+      margin-top: 15px;
+      height: 75vh;
+  }
+  .netflix-item-busqueda {
+      width: 100%;
+      margin-bottom: 10px;
+      margin: 10px auto;
+  }
+  .netflix-item-busqueda img {
+      width: 100%;
+  }
+  .cerrar-buscador {
+      position: absolute;
+      right: 5px;
+      top: 5px;
+      background: none;
+      border: none;
+      color: #4a4a4a;
   }
 
   </style>
@@ -442,6 +483,7 @@
                 <div class="app-netflix-btn-buscador"><i class="fas fa-search"></i></div>
                 <div class="app-netflix-buscador">
                   <h3>Buscar</h3>
+                  <button class="cerrar-buscador"><i class="fas fa-times"></i></button>
                   <input type="text" id="search-netflix">
                   <div class="app-netflix-buscador-resultados"></div>
                 </div>
@@ -506,7 +548,7 @@
       socket.emit('com-bg-app', 'obtener-netflix-home');
       appCargador();
       socket.on('netflix-home-client', function(data){   
-        $('.app-netflix-login, .app-netflix-home, .app-netflix-control-contenedor').removeClass("activo");
+        $('.app-netflix-login, .app-netflix-home, .app-netflix-control-contenedor, .app-netflix-buscador').removeClass("activo");
         if(data[0].tipo == 1){
           llenarLogin(data[0]);
           $('.app-netflix-login').addClass("activo");
@@ -517,15 +559,22 @@
         }
         appCargador(false);     
       });
+
+      socket.on('resultados', function(data){   
+        $('.app-netflix-login, .app-netflix-home, .app-netflix-control-contenedor, .app-netflix-buscador').removeClass("activo");
+        $('.app-netflix-home, .app-netflix-buscador').addClass("activo");
+        llenarBusqueda(data[0]);
+      });
       
       $(document).on("click", ".netflix-item-usuario", function (e) {
         e.preventDefault();
         socket.emit('servidor-funcion',`location.href = "${$(this).attr("href")}";`); 
       });
 
-      $(document).on("click", ".app-netflix-item, .btn-netlfix-reproducir", function (e) {
+      $(document).on("click", ".app-netflix-item, .btn-netlfix-reproducir, .netflix-item-busqueda", function (e) {
         e.preventDefault();
         appCargador();
+        limpiarBusqueda(); 
         socket.emit('servidor-funcion',`location.href = "${"https://www.netflix.com"+$(this).attr("href")}";`);
       });
 
@@ -537,9 +586,24 @@
 
       $(document).on("click", ".app-netflix-btn-buscador", function (e) {
         e.preventDefault();
+        $('.app-netflix-buscador').addClass("activo");
         socket.emit('servidor-funcion',`$(".searchTab").trigger("click"); $(".searchInput input").focus()`);
       });
       
+      $("#search-netflix").on("keyup", function () {
+        socket.emit('servidor-funcion',`location.href ="https://www.netflix.com/search?q=${$(this).val()}"`);
+      });
+
+      $(".cerrar-buscador").on("click", function () {
+        $('.app-netflix-buscador').removeClass("activo");
+        socket.emit('servidor-funcion',`location.href ="https://www.netflix.com/browse"`);
+        
+      });
+
+      function limpiarBusqueda(){
+        $(".app-netflix-buscador-resultados").html("");
+        $("#search-netflix").val("");
+      }
       
 
       $(window).on('scroll', function (e){
@@ -551,17 +615,27 @@
         }
       });
 
-      socket.on('activar-control', function(data){      
+      socket.on('activar-control', function(data){
         $('.app-netflix-login, .app-netflix-home').removeClass("activo");
         $('.app-netflix-control-contenedor').addClass("activo");
         appCargador(false);   
       });
       
       
-   
+      function llenarBusqueda(data = []){
+        $(".app-netflix-buscador-resultados").html("");
+        $("#search-netflix").val(data.busqueda);
+        data.resultados.map((data)=>{
+          $(".app-netflix-buscador-resultados").append(`
+            <div class="netflix-item-busqueda" href="${data.href}">
+              <img src="${data.img}" alt="${data.titulo}">
+            </div>
+          `);
+        });
+      }
 
       function llenarLogin(data = []){
-        $(".app-netflix-contenedor h3").html(data.pregunta);
+        $(".app-netflix-login h3").html(data.pregunta);
         $(".netflix-list-usuarios").html("");
         data.recomendados.map((data)=>{
               $(".netflix-list-usuarios").append(`
