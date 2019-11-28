@@ -322,7 +322,7 @@
       height: 250px;
       border: 50px solid #3c3c3c;
       border-radius: 50%;
-      margin: 45px auto;
+      margin: 0 auto;
       position: relative;
   }
   .app-netflix-control .btn {
@@ -355,9 +355,11 @@
       font-size: 21px!important;
   }
   .app-netflix-control-contenedor {
-      width: 100%;
-      height: 100%;
       display: none;
+      position: fixed;
+      bottom: 10%;
+      width: 100%;
+      left: 0;
   }
   .app-netflix-subtitulos {
       position: fixed;
@@ -367,7 +369,12 @@
       height: 100%;
       background-color: #3c3c3c;
       color: #fff;
-      padding: 20px;
+      padding: 50px 20px;
+      z-index: 11;
+      -webkit-transition: all .5s ease-in-out;
+      -moz-transition: all .5s ease-in-out;
+      -o-transition: all .5s ease-in-out;
+      transition: all .5s ease-in-out;
   }
 
   .app-netflix-subtitulos h5 {
@@ -376,10 +383,10 @@
       margin-top: 10px;
   }
 
-  .app-netflix-subtitulos button {
+  .app-contenedor-audsub button {
       background: transparent;
       border: none;
-      padding: 0;
+      padding: 10px 0;
       width: 100%;
       text-align: left;
       color: #bbb;
@@ -402,6 +409,7 @@
       left: 0;
       z-index: 10;
       width: 100%;
+      display: none;
   }
 
   .app-netflix-perfil {
@@ -416,12 +424,13 @@
       height: 100%;
       background: #000;
       padding: 20px;
+      z-index: 11;
       -webkit-transition: all .5s ease-in-out;
       -moz-transition: all .5s ease-in-out;
       -o-transition: all .5s ease-in-out;
       transition: all .5s ease-in-out;
   }
-  .app-netflix-buscador.activo {
+  .app-netflix-buscador.activo, .app-netflix-subtitulos.activo {
       left: 0%;
   }
   .app-netflix-buscador h3 {
@@ -450,7 +459,7 @@
   .netflix-item-busqueda img {
       width: 100%;
   }
-  .cerrar-buscador {
+  .cerrar-buscador, .cerrar-subtitulos {
       position: absolute;
       right: 5px;
       top: 5px;
@@ -458,7 +467,28 @@
       border: none;
       color: #4a4a4a;
   }
-
+  .btn-netflix-omitir {
+      width: fit-content;
+      padding: 10px;
+      border: solid #6d6d6d 1px;
+      color: #6d6d6d;
+      margin: 0 auto;
+      margin-bottom: 40px;
+      text-transform: uppercase;
+      font-weight: 600;
+  }
+  .cerrar-subtitulos {
+      top: 40px;
+      right: 20px;
+      color: #fff;
+      font-size: 24px;
+  }
+  .app-contenedor-audsub button.selected {
+      color: #fff;
+  }
+  .audsub-aud, .audsub-text {
+    margin-bottom: 15px;
+  }
   </style>
   <body class="app-netflix">
   <div id="cargador"><div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div></div>
@@ -475,20 +505,22 @@
             </div>
           </div>
 
-          <div class="app-netflix-home">
-          
-            <div class="app-netflix-navbar">
-              <div class="app-netflix-perfil"></div>
-              <div class="app-netflix-buscador-contenedor">
-                <div class="app-netflix-btn-buscador"><i class="fas fa-search"></i></div>
-                <div class="app-netflix-buscador">
-                  <h3>Buscar</h3>
-                  <button class="cerrar-buscador"><i class="fas fa-times"></i></button>
-                  <input type="text" id="search-netflix">
-                  <div class="app-netflix-buscador-resultados"></div>
-                </div>
+          <div class="app-netflix-navbar">
+            <div class="app-netflix-perfil"></div>
+            <div class="app-netflix-buscador-contenedor">
+              <div class="app-netflix-btn-buscador"><i class="fas fa-search"></i></div>
+              <div class="app-netflix-buscador">
+                <h3>Buscar</h3>
+                <button class="cerrar-buscador"><i class="fas fa-times"></i></button>
+                <input type="text" id="search-netflix">
+                <div class="app-netflix-buscador-resultados"></div>
               </div>
             </div>
+          </div>
+          
+          <div class="app-netflix-home">
+          
+            
             <div class="app-netflix-big">
               <div class="app-netflix-big-bg">
                 <img src="assets/img/netflix.png" alt="bigPicture">
@@ -509,7 +541,9 @@
             
             
           </div>
+          
           <div class="app-netflix-control-contenedor">
+            <div class="btn-netflix-omitir">Omitir resumen</div>
             <div class="app-netflix-control">
               <button class="btn btn-up"><i class="fas fa-comment-dots"></i></button>
               <button class="btn btn-down"><i class="fas fa-expand"></i></button>
@@ -518,10 +552,11 @@
               <button class="btn btn-play"><i class="fas fa-play"></i>  /  <i class="fas fa-pause"></i></button>
             </div>
             <div class="app-netflix-subtitulos">
-              <h5>Audio</h5>
-              <button>Español</button>
-              <h5>Subtitulos</h5>
-              <button>Español</button>
+              <button class="cerrar-subtitulos"><i class="fas fa-times"></i></button>
+              <div class="app-contenedor-audsub">
+                <div class="audsub-aud"></div>
+                <div class="audsub-text"></div>
+              </div>
             </div>
           </div>
           
@@ -548,27 +583,28 @@
       socket.emit('com-bg-app', 'obtener-netflix-home');
       appCargador();
       socket.on('netflix-home-client', function(data){   
-        $('.app-netflix-login, .app-netflix-home, .app-netflix-control-contenedor, .app-netflix-buscador').removeClass("activo");
+        $('.app-netflix-login, .app-netflix-home, .app-netflix-control-contenedor, .app-netflix-buscador, .app-netflix-navbar').removeClass("activo");
         if(data[0].tipo == 1){
           llenarLogin(data[0]);
           $('.app-netflix-login').addClass("activo");
         } else {
           llenarHome(data[0]);
-          $('.app-netflix-home').addClass("activo");
+          $('.app-netflix-home, .app-netflix-navbar').addClass("activo");
 
         }
         appCargador(false);     
       });
 
       socket.on('resultados', function(data){   
-        $('.app-netflix-login, .app-netflix-home, .app-netflix-control-contenedor, .app-netflix-buscador').removeClass("activo");
-        $('.app-netflix-home, .app-netflix-buscador').addClass("activo");
+        $('.app-netflix-login, .app-netflix-home, .app-netflix-control-contenedor, .app-netflix-buscador, .app-netflix-navbar').removeClass("activo");
+        $('.app-netflix-home, .app-netflix-buscador, .app-netflix-navbar').addClass("activo");
         llenarBusqueda(data[0]);
       });
       
       $(document).on("click", ".netflix-item-usuario", function (e) {
         e.preventDefault();
         socket.emit('servidor-funcion',`location.href = "${$(this).attr("href")}";`); 
+        appCargador();
       });
 
       $(document).on("click", ".app-netflix-item, .btn-netlfix-reproducir, .netflix-item-busqueda", function (e) {
@@ -600,6 +636,50 @@
         
       });
 
+      $(".cerrar-subtitulos").on("click", function () {
+        $('.app-netflix-subtitulos').removeClass("activo");        
+        socket.emit('servidor-funcion',`$(".button-nfplayerPlay").click();`);
+      });
+
+      $(".btn-netflix-omitir").on("click", function (e) {
+       
+        socket.emit('servidor-funcion',`$(".skip-credits a")[0].click();`);
+      });
+
+      $(".btn-play").on("click", function (e) {
+        socket.emit('servidor-funcion',`
+        if($(".nf-big-play-pause button").length > 0){
+          document.getElementsByClassName("nf-big-play-pause")[0].click();
+        } else {
+          if($(".button-nfplayerPause").length > 0){
+            $(".button-nfplayerPause").click();
+          } else {
+            $(".button-nfplayerPlay").click();
+          }
+        };`);
+      });
+
+      $(".btn-right").on("click", function (e) {
+        socket.emit('servidor-funcion',`$(".button-nfplayerFastForward").trigger("click");`);
+      });
+
+      $(".btn-left").on("click", function (e) {
+        socket.emit('servidor-funcion',`$(".button-nfplayerBackTen").trigger("click");`);
+      });
+
+      $(".btn-up").on("click", function (e) {
+        appCargador(true); 
+        $('.app-netflix-subtitulos').addClass("activo");
+        socket.emit('com-bg-app',"obtener-netflix-audsub");
+      });
+
+      $(document).on("click", ".app-contenedor-audsub button", function () {
+        $(this).siblings().removeClass("selected");
+        $(this).addClass("selected");
+        socket.emit('servidor-funcion',`$("li.track[data-uia='${$(this).attr("uia")}']").click();`);
+      });
+      
+
       function limpiarBusqueda(){
         $(".app-netflix-buscador-resultados").html("");
         $("#search-netflix").val("");
@@ -620,7 +700,30 @@
         $('.app-netflix-control-contenedor').addClass("activo");
         appCargador(false);   
       });
-      
+
+      socket.on('netflix-subtitulos-client', function(data){
+        llenarSubs(data[0]);
+        appCargador(false);   
+      });
+
+      function llenarSubs(data = []){
+        $(".audsub-aud").html(`<h5>${data.titAud}</h5>`);
+        $(".audsub-text").html(`<h5>${data.titTex}</h5>`);
+        data.audio.map((data)=>{
+          $(".audsub-aud").append(`
+            <button uia="${data.uia}" class="${(data.selected) ? 'selected':''}">
+              ${data.nombre}
+            </button>
+          `);
+        });
+        data.textos.map((data)=>{
+          $(".audsub-text").append(`
+            <button uia="${data.uia}" class="${(data.selected) ? 'selected':''}">
+              ${data.nombre}
+            </button>
+          `);
+        });
+      }
       
       function llenarBusqueda(data = []){
         $(".app-netflix-buscador-resultados").html("");
