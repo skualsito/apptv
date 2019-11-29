@@ -100,6 +100,8 @@
       </div>
     </div>
     <script>
+        const socket = io('http://11.11.15.8:8080');
+
 /*       var fondos = ['rose', 'violet', 'sand', 'blank', ''];    
       var rand = fondos[Math.floor(Math.random() * fondos.length)];
       $('.app-tv').addClass(rand); */
@@ -121,18 +123,17 @@
             }
         }
       });
-        /* const socket = io('http://11.11.15.8:8080');
-        $(function () {
-            $("#entrar").on("click", function (event) {
-                event.preventDefault();
-                socket.emit("entrar-conexion", $("#conexion").val());
-            });
-
-            socket.on("emparejados", function(){
-                $(".noentro").addClass("d-none");
-                $(".entro").removeClass("d-none");
-            });
-        }); */
+      $(document).on("click", ".btn-conectar", function (event) {
+          event.preventDefault();
+          socket.emit("entrar-conexion", $("input[name='txtcon1']").val()+$("input[name='txtcon2']").val()+$("input[name='txtcon3']").val()+$("input[name='txtcon4']").val()+$("input[name='txtcon5']").val()+$("input[name='txtcon6']").val());
+      });
+      socket.on("emparejados", function(){
+          console.log("entro");
+          $("body").attr("class", "app-control").load("control.php");
+      });
+      socket.on("web-cliente", function(data){
+          console.log(data);
+      });
     </script>
   </body>
 </html>
