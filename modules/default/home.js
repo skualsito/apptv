@@ -1,4 +1,4 @@
-const socket = io('http://192.168.1.105:8080');
+const socket = io('http://192.168.1.106:8080');
 
 /*       var fondos = ['rose', 'violet', 'sand', 'blank', ''];    
 var rand = fondos[Math.floor(Math.random() * fondos.length)];
@@ -28,7 +28,7 @@ $(document).on("click", ".btn-conectar", function (event) {
 });
 socket.on("emparejados", function(){
     
-    $(".container-general").load("./modules/default/control/control.php", function(){
+    $(".container-general").load("./modules/default/control/control.html", function(){
       $("body").attr("class", "app-control");
       appCargador(false);
     });
@@ -43,14 +43,14 @@ socket.on("web-cliente", function(data){
 
     switch (data) {
       case "youtube":
-        $(".container-general").load("./modules/default/youtube/youtube.php", function(){
+        $(".container-general").load("./modules/default/youtube/youtube.html", function(){
           $("body").attr("class", "app-yt");
           webActiva = data;
           appCargador(false);
         });
       break;
       case "netflix":
-        $(".container-general").load("./modules/default/netflix/netflix.php", function(){
+        $(".container-general").load("./modules/default/netflix/netflix.html", function(){
           $("body").attr("class", "app-netflix");
           webActiva = data;
           appCargador(false);
@@ -58,7 +58,7 @@ socket.on("web-cliente", function(data){
       break;
     
       default:
-        $(".container-general").load("./modules/default/control/control.php", function(){
+        $(".container-general").load("./modules/default/control/control.html", function(){
           $("body").attr("class", "app-control");
           webActiva = data;
           appCargador(false);
