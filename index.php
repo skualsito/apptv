@@ -12,10 +12,10 @@
     <script src="assets/js/bootstrap.min.js"></script>
     <script src="assets/js/socket.io.js"></script>
     <script src="https://kit.fontawesome.com/da9aba50d5.js" crossorigin="anonymous"></script>
-    <script src="assets/js/apps/home.js"></script>
-    <script src="assets/js/apps/control.js"></script>
-    <script src="assets/js/apps/netflix.js"></script>
-    <script src="assets/js/apps/yt.js"></script>
+    <script src="modules/default/home.js"></script>
+    <script src="modules/default/control/control.js"></script>
+    <script src="modules/default/netflix/netflix.js"></script>
+    <script src="modules/default/youtube/youtube.js"></script>
 
     <title>APPTV</title>
   </head>

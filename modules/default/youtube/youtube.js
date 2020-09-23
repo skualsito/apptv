@@ -78,7 +78,7 @@
 
   socket.on('yt-on-client', function(data){   
     llenarGrilla(data[0].recomendados, true);
-    $(".app-yt-user img").attr('src', data[0].usuario);
+    $(".app-yt-user img").attr('src', "https:"+data[0].usuario);
     appCargador(false);     
   });
 

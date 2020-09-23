@@ -294,7 +294,7 @@ html, body {
 
 .app-netflix-item {
     display: inline-block;
-    width: 100px;
+    width: fit-content;
     height: 140px;
     margin-right: 5px;
 }
