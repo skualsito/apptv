@@ -15,13 +15,19 @@
             <button class="btn btn-search"><i class="fas fa-search"></i></button>
           </div>
           <div class="app-control-botonmedio">
-            <button class="btn btn-up"><i class="fas fa-angle-up"></i></button>
-            <button class="btn btn-down"><i class="fas fa-angle-down"></i></button>
-            <button class="btn btn-left"><i class="fas fa-angle-left"></i></button>
-            <button class="btn btn-right"><i class="fas fa-angle-right"></i></button>
-            <button class="btn btn-ok">OK</button>
+            <button class="btn btnControl btn-up" action="up"><i class="fas fa-angle-up"></i></button>
+            <button class="btn btnControl btn-down" action="down"><i class="fas fa-angle-down"></i></button>
+            <button class="btn btnControl btn-left" action="left"><i class="fas fa-angle-left"></i></button>
+            <button class="btn btnControl btn-right" action="right"><i class="fas fa-angle-right"></i></button>
+            <button class="btn btnControl btn-ok" action="ok">OK</button>
           </div>
         </div>
       </div>
       <div class="app-control-footer"></div>
     </div>
+<script>
+  if(!document.fullscreenElement && !document.mozFullScreenElement && !document.webkitFullscreenElement && !document.msFullscreenElement){
+    console.log("asd");
+      $(".app-pantallacompleta").addClass("activo");
+  }
+</script>

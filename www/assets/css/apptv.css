@@ -3,6 +3,15 @@ html, body {
     height: 100%;
     font-family: 'Roboto', sans-serif;
 }
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type=number] {
+  -moz-appearance: textfield;
+}
 .app-control {
     color: #fff;
     background: #171717;
@@ -84,6 +93,7 @@ html, body {
     z-index: 9999999;
     background-color: #060606;
     top: -100%;
+    left: 0;
     -webkit-transition: all .5s ease-in-out;
     -moz-transition: all .5s ease-in-out;
     -o-transition: all .5s ease-in-out;
@@ -649,7 +659,6 @@ html, body {
     border-radius: 50%;
     margin: 45px auto;
     position: relative;
-    display: none;
 }
 .app-youtube-control .btn {
     color: #858585;
@@ -682,6 +691,22 @@ html, body {
 }
 .activo {
   display: block!important;
+}
+.btn-youtube-omitir {
+    width: fit-content;
+    padding: 10px;
+    border: solid #6d6d6d 1px;
+    color: #6d6d6d;
+    margin: 0 auto;
+    margin-bottom: 40px;
+    text-transform: uppercase;
+    font-weight: 600;
+}
+.app-youtube-control-contenedor {
+    display: none;
+    position: relative;
+    width: 100%;
+    margin-top: 5em;
 }
 /* fin youtube*/
 

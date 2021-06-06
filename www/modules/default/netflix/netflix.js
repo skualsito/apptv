@@ -1,12 +1,13 @@
 //socket.emit('com-bg-app', 'obtener-netflix-home');
 
 socket.on('netflix-home-client', function(data){   
+  console.log(data);
   $('.app-netflix-login, .app-netflix-home, .app-netflix-control-contenedor, .app-netflix-buscador, .app-netflix-navbar').removeClass("activo");
-  if(data[0].tipo == 1){
-    llenarLogin(data[0]);
+  if(data.tipo == 1){
+    llenarLogin(data);
     $('.app-netflix-login').addClass("activo");
   } else {
-    llenarHome(data[0]);
+    llenarHome(data);
     $('.app-netflix-home, .app-netflix-navbar').addClass("activo");
 
   }
@@ -17,7 +18,7 @@ socket.on('resultados', function(data){
   if($("body").hasClass("app-netflix")) {
     $('.app-netflix-login, .app-netflix-home, .app-netflix-control-contenedor, .app-netflix-buscador, .app-netflix-navbar').removeClass("activo");
     $('.app-netflix-home, .app-netflix-buscador, .app-netflix-navbar').addClass("activo");
-    llenarBusqueda(data[0]);
+    llenarBusqueda(data);
   }
 });
 
@@ -58,7 +59,7 @@ $(document).on("click", ".cerrar-buscador", function () {
 
 $(document).on("click", ".cerrar-subtitulos", function () {
   $('.app-netflix-subtitulos').removeClass("activo");        
-  socket.emit('servidor-funcion',`$(".button-nfplayerPlay").click();`);
+  socket.emit('servidor-funcion',`$(".button-nfplayerPlay, .PlayView .nf-big-play-pause").click();`);
 });
 
 $(document).on("click", ".btn-netflix-omitir", function (e) {
@@ -68,15 +69,20 @@ $(document).on("click", ".btn-netflix-omitir", function (e) {
 
 $(document).on("click", ".app-netflix-control .btn-play", function (e) {
   socket.emit('servidor-funcion',`
-  if($(".nf-big-play-pause button").length > 0){
-    document.getElementsByClassName("nf-big-play-pause")[0].click();
+  if($(".PlayView .nf-big-play-pause").length > 0){
+    $(".PlayView .nf-big-play-pause").click();
   } else {
-    if($(".button-nfplayerPause").length > 0){
-      $(".button-nfplayerPause").click();
+    if($(".nf-big-play-pause button").length > 0){
+      document.getElementsByClassName("nf-big-play-pause")[0].click();
     } else {
-      $(".button-nfplayerPlay").click();
-    }
-  };`);
+      if($(".button-nfplayerPause").length > 0){
+        $(".button-nfplayerPause").click();
+      } else {
+        $(".button-nfplayerPlay").click();
+      }
+    };
+  }
+  `);
 });
 
 $(document).on("click", ".app-netflix-control .btn-right", function (e) {
@@ -93,6 +99,11 @@ $(document).on("click", ".app-netflix-control .btn-up", function (e) {
   socket.emit('com-bg-app',"obtener-netflix-audsub");
 });
 
+$(document).on("click", ".app-netflix-control .btn-down", function (e) {
+  socket.emit('servidor-funcion',`window.history.back();`);
+});
+
+
 $(document).on("click", ".app-contenedor-audsub button", function () {
   $(this).siblings().removeClass("selected");
   $(this).addClass("selected");
@@ -105,7 +116,7 @@ function limpiarBusqueda(){
   $("#search-netflix").val("");
 }
 
-
+/* 
 $(window).on('scroll', function (e){
   if($(".app-netflix-control-contenedor").hasClass("activo") && $("body").hasClass("app-netflix"))
     return false;
@@ -113,7 +124,7 @@ $(window).on('scroll', function (e){
   if(($(this).scrollTop() % 50) == 0){
     socket.emit('com-bg-app', 'obtener-netflix-home');
   }
-});
+}); */
 
 socket.on('activar-control', function(data){
   if($("body").hasClass("app-netflix")) {
@@ -157,6 +168,7 @@ function llenarBusqueda(data = []){
       </div>
     `);
   });
+  appCargador(false); 
 }
 
 function llenarLogin(data = []){

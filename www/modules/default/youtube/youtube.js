@@ -17,7 +17,7 @@
     e.preventDefault();
     appCargador();
     setTimeout(() => {
-      $('.app-youtube-control').removeClass("activo");
+      $('.app-youtube-control-contenedor').removeClass("activo");
       $('.app-youtube-videos').removeClass("activo").addClass("activo");
     }, 500); 
     socket.emit('servidor-funcion',`location.href = "/";`); 
@@ -48,7 +48,7 @@
     socket.emit('servidor-funcion',`window.history.back()`);
     appCargador();
     setTimeout(() => {
-      $('.app-youtube-control').removeClass("activo");
+      $('.app-youtube-control-contenedor').removeClass("activo");
       $('.app-youtube-videos').removeClass("activo").addClass("activo");
     }, 500);        
   });
@@ -74,6 +74,10 @@
     socket.emit('servidor-funcion',`location.href = $('.ytp-next-button').attr('href');`);
   });
 
+  $(document).on("click", ".btn-youtube-omitir", function (e) {
+    socket.emit('servidor-funcion',`$(".ytp-ad-skip-button")[0].click();`);
+  });
+
   
 
   socket.on('yt-on-client', function(data){  
@@ -85,13 +89,14 @@
 
   socket.on('activar-control', function(data){  
     if($("body").hasClass("app-youtube")) {
-        $('.app-youtube-control').removeClass("activo").addClass("activo");
+        $('.app-youtube-control-contenedor').removeClass("activo").addClass("activo");
         $('.app-youtube-videos').removeClass("activo");
         appCargador(false); 
     }      
   });
   
   socket.on('resultados', function(data){
+    console.log(data);
     if($("body").hasClass("app-youtube")) {
       llenarGrilla(data.recomendados);
       appCargador(false);
@@ -117,5 +122,7 @@
           `);
         }
       });
+      $('.app-youtube-control-contenedor').removeClass("activo");
+      $('.app-youtube-videos').addClass("activo");
   }
 
