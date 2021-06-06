@@ -1,7 +1,6 @@
 //socket.emit('com-bg-app', 'obtener-netflix-home');
 
 socket.on('netflix-home-client', function(data){   
-  console.log(data);
   $('.app-netflix-login, .app-netflix-home, .app-netflix-control-contenedor, .app-netflix-buscador, .app-netflix-navbar').removeClass("activo");
   if(data.tipo == 1){
     llenarLogin(data);
