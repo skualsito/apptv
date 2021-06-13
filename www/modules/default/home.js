@@ -1,4 +1,5 @@
-var socket = io("http://192.168.0.104:3000");
+//var socket = io('http://localhost:3001');
+var socket = io("http://jsmart-server.juanalmada.com");
 
 
 /*       var fondos = ['rose', 'violet', 'sand', 'blank', ''];    
@@ -55,6 +56,29 @@ $(document).on("click", ".app-tv-menu-botonera .btn-home", function () {
     socket.emit('com-bg-app', 'index');
     $(".app-tv-menu-general").toggleClass("activo");
     appCargador();
+});
+
+$(document).on("click", ".app-tv-menu-botonera .btn-report", function () {
+  $(".app-tv-report").addClass("activo");
+});
+
+$(document).on("click", ".app-tv-report .btn-primary", function(){
+  $(".app-tv-report").removeClass("activo");
+});
+
+$(document).on("click", ".app-tv-report .btn-success", function(){
+  socket.emit('enviar-mail', {descripcion:$('.contenedor-error textarea').val(), email:$(".contenedor-error input[name='txtmail']").val()});
+  $(".app-tv-report").html(`<div class="contenedor-error"><h1>Muchas gracias por tu ayuda!</h1></div>`);
+  setTimeout(function(){
+    $(".app-tv-report").removeClass("activo");
+    $(".app-tv-report").html(`<div class="contenedor-error">
+    <h1>Reportar un error</h1>
+    <input type="email" name="txtmail" placeholder="Email">
+    <textarea placeholder="Descripción" name="txtreporte"></textarea>
+    <button class="btn btn-sm btn-success">Enviar</button>
+    <button class="btn btn-sm btn-primary">Cerrar</button>
+  </div>`);
+  }, 1000);
 });
 
 $(document).on("click", ".app-tv-menu-footer", function (e) {
